@@ -1,0 +1,229 @@
+---
+import Icon from './Icon.astro';
+import type { Video } from '../data/site';
+import { asset } from '../lib/paths';
+import { imagePlaceholder } from '../lib/images';
+
+interface Props {
+  video: Video;
+  index: number;
+  class?: string;
+}
+
+const { video, index, class: className = '' } = Astro.props;
+const number = String(index).padStart(2, '0');
+---
+
+<article class:list={['video-card', className]} data-category={video.category}>
+  <button
+    class="video-card__media"
+    type="button"
+    data-video-id={video.id}
+    data-video-title={video.title}
+    aria-label={`Play ${video.title}`}
+  >
+    <img
+      src={imagePlaceholder}
+      data-src={asset(`assets/images/work/${video.id}-720.webp`)}
+      data-srcset={`${asset(`assets/images/work/${video.id}-720.webp`)} 720w, ${asset(`assets/images/work/${video.id}-1440.webp`)} 1440w`}
+      sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 640px"
+      alt={`Still from ${video.title}`}
+      width="720"
+      height="405"
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="video-card__shade" aria-hidden="true"></span>
+    <span class="video-card__topline">
+      <span class="video-card__index">{number}</span>
+      <span class="video-card__category">{video.category}</span>
+    </span>
+    <span class="video-card__play" aria-hidden="true">
+      <Icon name="play" size={16} />
+    </span>
+    <span class="video-card__hint" aria-hidden="true">Watch film</span>
+  </button>
+
+  <div class="video-card__body">
+    <h3>{video.title}</h3>
+    <p>{video.description}</p>
+  </div>
+</article>
+
+<style>
+  .video-card {
+    min-width: 0;
+  }
+
+  .video-card__media {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+    background: var(--ink-raised);
+    overflow: hidden;
+    text-align: left;
+    transition: border-color 0.4s var(--ease), transform 0.5s var(--ease);
+  }
+
+  .video-card__media::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgba(242, 239, 232, 0.03);
+    content: '';
+    pointer-events: none;
+  }
+
+  .video-card__media img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    filter: saturate(0.82) contrast(1.05) brightness(0.92);
+    transition: transform 0.85s var(--ease), filter 0.55s var(--ease);
+  }
+
+  .video-card__shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(4, 6, 6, 0.22), transparent 38%),
+      linear-gradient(0deg, rgba(4, 6, 6, 0.62), transparent 45%);
+    pointer-events: none;
+  }
+
+  .video-card__topline {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    left: 14px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.11em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .video-card__index {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(242, 239, 232, 0.32);
+    border-radius: 50%;
+    background: rgba(8, 10, 11, 0.32);
+    backdrop-filter: blur(8px);
+    place-items: center;
+  }
+
+  .video-card__category {
+    padding: 8px 10px;
+    border: 1px solid rgba(242, 239, 232, 0.2);
+    border-radius: 999px;
+    background: rgba(8, 10, 11, 0.35);
+    backdrop-filter: blur(8px);
+  }
+
+  .video-card__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: grid;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: var(--acid);
+    color: var(--ink);
+    transform: translate(-50%, -42%) scale(0.82);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease), background-color 0.3s;
+    place-items: center;
+  }
+
+  .video-card__hint {
+    position: absolute;
+    right: 16px;
+    bottom: 14px;
+    z-index: 2;
+    color: var(--paper-dim);
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 0.35s, transform 0.35s;
+  }
+
+  .video-card__body {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-top: 12px;
+  }
+
+  .video-card__body h3 {
+    max-width: 22ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.45vw, 1.4rem);
+    font-weight: 520;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    transition: color 0.25s;
+  }
+
+  .video-card__body p {
+    max-width: 30ch;
+    color: var(--muted);
+    font-size: 0.71rem;
+    line-height: 1.55;
+    text-align: right;
+  }
+
+  .video-card:hover .video-card__media {
+    border-color: rgba(201, 255, 87, 0.32);
+    transform: translateY(-3px);
+  }
+
+  .video-card:hover .video-card__media img {
+    filter: saturate(1) contrast(1.02) brightness(1);
+    transform: scale(1.035);
+  }
+
+  .video-card:hover .video-card__play {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .video-card:hover .video-card__hint {
+    opacity: 1;
+    transform: none;
+  }
+
+  .video-card:hover h3 {
+    color: var(--acid);
+  }
+
+  @media (max-width: 700px) {
+    .video-card__body {
+      display: block;
+    }
+    .video-card__body p {
+      margin-top: 6px;
+      text-align: left;
+    }
+    .video-card__play {
+      width: 48px;
+      height: 48px;
+    }
+  }
+</style>

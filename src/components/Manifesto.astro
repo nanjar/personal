@@ -1,0 +1,191 @@
+---
+---
+
+<section class="manifesto" aria-label="Studio manifesto">
+  <div class="manifesto__orb" aria-hidden="true">
+    <span class="manifesto__ring manifesto__ring--one"></span>
+    <span class="manifesto__ring manifesto__ring--two"></span>
+    <span class="manifesto__core"></span>
+  </div>
+
+  <div class="container">
+    <div class="manifesto__top">
+      <span class="mono">Manifesto / 001</span>
+      <span class="mono">Bandung, Indonesia</span>
+    </div>
+
+    <blockquote data-reveal>
+      “The tool can generate<br />
+      <em>a thousand images.</em><br />
+      It cannot tell you<br />
+      which one is <em>true.</em>”
+    </blockquote>
+
+    <div class="manifesto__foot" data-reveal style="--delay: 100ms">
+      <p>Taste, intention, and a point of view are still the job.</p>
+      <span class="manifesto__signature">Nanjar Budiman</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    position: relative;
+    padding-block: clamp(64px, 8vw, 112px);
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+  }
+
+  .manifesto::before {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(8, 10, 11, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(8, 10, 11, 0.055) 1px, transparent 1px);
+    background-size: 92px 92px;
+    mask-image: radial-gradient(ellipse at 80% 40%, black, transparent 65%);
+    content: '';
+    pointer-events: none;
+  }
+
+  .manifesto .container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .manifesto__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(8, 10, 11, 0.16);
+    color: rgba(8, 10, 11, 0.55);
+    font-size: 0.55rem;
+  }
+
+  .manifesto blockquote {
+    max-width: 14ch;
+    margin: clamp(42px, 6vw, 80px) 0 clamp(48px, 7vw, 90px);
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 7.2vw, 8.4rem);
+    font-weight: 500;
+    letter-spacing: -0.07em;
+    line-height: 0.88;
+  }
+
+  .manifesto blockquote em {
+    color: #54771b;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+
+  .manifesto__foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(8, 10, 11, 0.16);
+  }
+
+  .manifesto__foot p {
+    max-width: 38ch;
+    color: rgba(8, 10, 11, 0.62);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .manifesto__signature {
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2vw, 1.8rem);
+    font-style: italic;
+    line-height: 1;
+  }
+
+  .manifesto__orb {
+    position: absolute;
+    top: 50%;
+    right: -8vw;
+    width: min(44vw, 680px);
+    aspect-ratio: 1;
+    transform: translateY(-50%);
+    opacity: 0.9;
+  }
+
+  .manifesto__ring {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(8, 10, 11, 0.18);
+    border-radius: 50%;
+  }
+
+  .manifesto__ring--one {
+    inset: 8%;
+    border-style: dashed;
+    animation: manifesto-spin 40s linear infinite;
+  }
+
+  .manifesto__ring--two {
+    inset: 22%;
+    border-color: rgba(8, 10, 11, 0.1);
+    animation: manifesto-spin 28s linear infinite reverse;
+  }
+
+  .manifesto__core {
+    position: absolute;
+    inset: 37%;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.9), transparent 8%),
+      radial-gradient(circle at 36% 32%, #d7ff9d, #c9ff57 28%, #ff6b3d 62%, #181d14 100%);
+    box-shadow: 0 30px 80px rgba(8, 10, 11, 0.16);
+    animation: manifesto-breathe 8s ease-in-out infinite;
+  }
+
+  @keyframes manifesto-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes manifesto-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.045);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .manifesto__orb {
+      top: 36%;
+      right: -20vw;
+      width: 70vw;
+      opacity: 0.45;
+    }
+    .manifesto blockquote {
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .manifesto__foot {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .manifesto__orb {
+      top: 30%;
+      right: -34vw;
+      width: 105vw;
+      opacity: 0.26;
+    }
+  }
+</style>

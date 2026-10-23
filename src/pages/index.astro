@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Ticker from '../components/Ticker.astro';
+import AboutSection from '../components/AboutSection.astro';
+import WorkPreview from '../components/WorkPreview.astro';
+import Manifesto from '../components/Manifesto.astro';
+import MusicSection from '../components/MusicSection.astro';
+import JournalPreview from '../components/JournalPreview.astro';
+import ServicesSection from '../components/ServicesSection.astro';
+import ContactCTA from '../components/ContactCTA.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title={site.title}
+  description={site.description}
+  image="/assets/images/og.jpg"
+>
+  <Hero />
+  <Ticker />
+  <AboutSection />
+  <WorkPreview />
+  <Manifesto />
+  <MusicSection />
+  <JournalPreview />
+  <ServicesSection />
+  <ContactCTA />
+  <Ticker
+    accent
+    items={['Open to collaborations', 'AI music', 'Cinematic video', 'Creative automation', 'Bandung → worldwide']}
+  />
+</BaseLayout>

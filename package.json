@@ -1,0 +1,29 @@
+{
+  "name": "nanjar-personal",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "build:fast": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "qa": "node tools/qa.mjs",
+    "extract": "python tools/extract_articles.py"
+  },
+  "dependencies": {
+    "astro": "^5.13.5",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/three": "^0.180.0",
+    "playwright-core": "^1.64.1",
+    "typescript": "^5.9.2"
+  },
+  "packageManager": "npm@10.9.8",
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

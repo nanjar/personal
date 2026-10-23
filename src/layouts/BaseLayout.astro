@@ -1,0 +1,223 @@
+---
+import '../styles/global.css';
+import instrumentSansFont from '../assets/fonts/instrument-sans-latin-wght-normal.woff2?url';
+import instrumentSerifItalicFont from '../assets/fonts/instrument-serif-latin-400-italic.woff2?url';
+
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+import { url } from '../lib/paths';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  bodyClass?: string;
+  lang?: string;
+}
+
+const {
+  title = site.title,
+  description = site.description,
+  image = '/assets/images/og.jpg',
+  type = 'website',
+  noindex = false,
+  bodyClass = '',
+  lang = 'en',
+} = Astro.props;
+
+const origin = Astro.site ?? new URL('https://nanjarbudiman.com');
+const siteRoot = new URL(url('/'), origin).toString();
+const pathname = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const canonical = new URL(pathname, origin).toString();
+const ogImage = new URL(url(image), origin).toString();
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${siteRoot}#website`,
+      url: siteRoot,
+      name: site.name,
+      description,
+      inLanguage: 'id-ID',
+      publisher: { '@id': `${siteRoot}#person` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${siteRoot}#person`,
+      name: site.name,
+      jobTitle: 'AI Content Creator & Cinematic Video Producer',
+      description:
+        'AI creative from Bandung, Indonesia, working across AI music, cinematic video, generative storytelling, and automation.',
+      url: siteRoot,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Bandung',
+        addressRegion: 'Jawa Barat',
+        addressCountry: 'ID',
+      },
+      sameAs: [
+        'https://youtube.com/nanjar2000',
+        'https://instagram.com/nanjarbudiman',
+        'https://tiktok.com/@nanjarbudiman',
+        'https://facebook.com/pamungkas.tea.7',
+      ],
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080a0b" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="apple-touch-icon" href={url('/favicon.svg')} />
+    <link rel="preload" href={instrumentSansFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={instrumentSerifItalicFont} as="font" type="font/woff2" crossorigin />
+    <meta name="author" content={site.name} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index,follow,max-image-preview:large'} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="id_ID" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
+    <slot name="head" />
+  </head>
+  <body class={bodyClass} id="top">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <dialog class="video-modal" data-video-modal aria-label="Video player">
+      <div class="video-modal__bar">
+        <span class="video-modal__title" data-video-title>Now playing</span>
+        <button class="video-modal__close" type="button" data-video-close aria-label="Close video">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="video-modal__frame" data-video-frame></div>
+    </dialog>
+  </body>
+</html>
+
+<script>
+  // Lightweight, viewport-aware image loading for below-the-fold media.
+  const deferredImages = [...document.querySelectorAll<HTMLImageElement>('img[data-src]')];
+
+  const loadDeferred = (image: HTMLImageElement) => {
+    const src = image.dataset.src;
+    if (!src) return;
+    if (image.dataset.srcset) image.srcset = image.dataset.srcset;
+    image.src = src;
+    image.removeAttribute('data-src');
+    image.removeAttribute('data-srcset');
+  };
+
+  if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          loadDeferred(entry.target as HTMLImageElement);
+          imageObserver.unobserve(entry.target);
+        });
+      },
+      { rootMargin: '320px 0px' },
+    );
+    deferredImages.forEach((image) => imageObserver.observe(image));
+  } else {
+    deferredImages.forEach(loadDeferred);
+  }
+
+  // Scroll-triggered reveals.
+  const revealTargets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    );
+    revealTargets.forEach((target) => observer.observe(target));
+  } else {
+    revealTargets.forEach((target) => target.classList.add('is-revealed'));
+  }
+
+  // Card-level pointer spotlight.
+  document.querySelectorAll<HTMLElement>('.spotlight').forEach((card) => {
+    card.addEventListener(
+      'pointermove',
+      (event) => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+        card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+      },
+      { passive: true },
+    );
+  });
+
+  // Lightweight YouTube dialog — the iframe is only created on demand.
+  const modal = document.querySelector<HTMLDialogElement>('[data-video-modal]');
+  const frame = modal?.querySelector<HTMLElement>('[data-video-frame]');
+  const modalTitle = modal?.querySelector<HTMLElement>('[data-video-title]');
+
+  function closeVideo() {
+    if (!modal) return;
+    modal.close();
+  }
+
+  document.addEventListener('click', (event) => {
+    const trigger = (event.target as Element | null)?.closest<HTMLElement>('[data-video-id]');
+    if (trigger && modal && frame) {
+      const id = trigger.dataset.videoId;
+      if (!id) return;
+      modalTitle!.textContent = trigger.dataset.videoTitle || 'Now playing';
+      frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" title="${trigger.dataset.videoTitle || 'Video'}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+      modal.showModal();
+      return;
+    }
+
+    if ((event.target as Element | null)?.closest('[data-video-close]')) closeVideo();
+  });
+
+  modal?.addEventListener('click', (event) => {
+    if (event.target === modal) closeVideo();
+  });
+
+  modal?.addEventListener('close', () => {
+    if (frame) frame.innerHTML = '';
+  });
+</script>

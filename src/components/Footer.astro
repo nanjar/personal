@@ -1,0 +1,239 @@
+---
+import Icon from './Icon.astro';
+import { socials } from '../data/site';
+import { url } from '../lib/paths';
+
+const year = new Date().getFullYear();
+
+const explore = [
+  { label: 'Work', href: '/work/' },
+  { label: 'Music', href: '/music/' },
+  { label: 'Journal', href: '/blog/' },
+  { label: 'About', href: '/about/' },
+  { label: 'Contact', href: '/contact/' },
+];
+
+const legal = [
+  { label: 'Privacy', href: '/privacy-policy/' },
+  { label: 'Terms', href: '/terms-of-service/' },
+  { label: 'Cookies', href: '/cookie-policy/' },
+  { label: 'Disclaimer', href: '/disclaimer/' },
+  { label: 'AI disclosure', href: '/ai-content-disclosure/' },
+  { label: 'Editorial policy', href: '/editorial-policy/' },
+  { label: 'Copyright', href: '/copyright/' },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-statement">
+        <span class="eyebrow">A standing invitation</span>
+        <p>Bring a story.<br /><em>Let's make it unreal.</em></p>
+        <a class="btn btn--outline" href={url('/contact/')}>
+          Start a conversation
+          <Icon name="arrow-up-right" size={16} />
+        </a>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-col">
+          <h3 class="mono">Explore</h3>
+          {explore.map((link) => <a href={url(link.href)}>{link.label}</a>)}
+        </div>
+        <div class="footer-col">
+          <h3 class="mono">Elsewhere</h3>
+          {socials.map((social) => (
+            <a href={social.href} target="_blank" rel="noopener noreferrer">
+              {social.label}
+              <Icon name="arrow-up-right" size={12} />
+            </a>
+          ))}
+        </div>
+        <div class="footer-col footer-col--legal">
+          <h3 class="mono">Legal</h3>
+          {legal.map((link) => <a href={url(link.href)}>{link.label}</a>)}
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-mark" aria-hidden="true">
+      <span>NANJAR</span>
+      <small>BUDIMAN</small>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {year} Nanjar Budiman. All rights reserved.</span>
+      <span class="footer-bottom__mid">Bandung, Indonesia — 6.9175° S</span>
+      <a href="#top" class="footer-top-link">Back to top <Icon name="arrow-up-right" size={13} /></a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding-top: clamp(70px, 9vw, 120px);
+    border-top: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse at 50% 100%, rgba(201, 255, 87, 0.06), transparent 52%),
+      var(--ink);
+    overflow: hidden;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(48px, 8vw, 130px);
+    align-items: start;
+  }
+
+  .footer-statement p {
+    margin: 26px 0 32px;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4.8vw, 4.7rem);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.94;
+  }
+
+  .footer-statement p em {
+    color: var(--acid);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .footer-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    padding-top: 8px;
+  }
+
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+  }
+
+  .footer-col h3 {
+    margin-bottom: 12px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.61rem;
+    font-weight: 400;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  .footer-col a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--paper-dim);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover {
+    color: var(--acid);
+  }
+
+  .footer-col--legal {
+    gap: 7px;
+  }
+  .footer-col--legal a {
+    color: var(--muted);
+    font-size: 0.72rem;
+  }
+
+  .footer-mark {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: clamp(60px, 9vw, 120px);
+    border-bottom: 1px solid var(--line);
+    color: transparent;
+    font-family: var(--font-display);
+    line-height: 0.72;
+    user-select: none;
+    -webkit-text-stroke: 1px rgba(242, 239, 232, 0.26);
+  }
+
+  .footer-mark span {
+    display: block;
+    font-size: clamp(5rem, 18.2vw, 19rem);
+    font-weight: 600;
+    letter-spacing: -0.08em;
+    transform: translateX(-0.04em);
+  }
+
+  .footer-mark small {
+    padding-bottom: 1.6vw;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: clamp(0.55rem, 0.8vw, 0.7rem);
+    letter-spacing: 0.3em;
+    -webkit-text-stroke: 0;
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 0 30px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.57rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .footer-top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--paper-dim);
+  }
+  .footer-top-link:hover {
+    color: var(--acid);
+  }
+
+  @media (max-width: 980px) {
+    .footer-top {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .footer-mark small {
+      display: none;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .footer-columns {
+      grid-template-columns: 1fr 1fr;
+      gap: 34px 20px;
+    }
+    .footer-col--legal {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer-col--legal h3 {
+      grid-column: 1 / -1;
+    }
+    .footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .footer-bottom__mid {
+      display: none;
+    }
+  }
+</style>

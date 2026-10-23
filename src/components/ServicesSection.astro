@@ -1,0 +1,180 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { services } from '../data/site';
+import { url } from '../lib/paths';
+---
+
+<section class="section services-section" id="services">
+  <div class="container">
+    <SectionHead index="05 / Studio">
+      <Fragment slot="title">Three ways<br /><em>to make it real.</em></Fragment>
+      <Fragment slot="note">
+        Small, senior, and deliberately hands-on. I take on a limited number of collaborations where the
+        story matters as much as the output.
+        <br /><br />
+        <a href={url('/contact/')}>Tell me what you're making <span aria-hidden="true">↗</span></a>
+      </Fragment>
+    </SectionHead>
+
+    <div class="services-grid">
+      {services.map((service, index) => (
+        <article class="service-card spotlight" data-reveal style={`--delay:${index * 80}ms`}>
+          <div class="service-card__top">
+            <span class="service-card__number mono">{service.number}</span>
+            <span class="service-card__arrow" aria-hidden="true"><Icon name="arrow-up-right" size={16} /></span>
+          </div>
+          <span class="service-card__kicker mono">{service.kicker}</span>
+          <h3>{service.title}</h3>
+          <p>{service.text}</p>
+          <div class="service-card__tags">
+            {service.tags.map((tag) => <span class="tag">{tag}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="services-foot" data-reveal>
+      <span class="mono">Concept · production · delivery</span>
+      <a class="link-arrow" href={url('/contact/')}>
+        Start a project
+        <Icon name="arrow-up-right" size={14} />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-section {
+    border-top: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse at 22% 70%, rgba(201, 255, 87, 0.04), transparent 30%),
+      var(--ink);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: clamp(48px, 6vw, 80px);
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .service-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+    padding: clamp(22px, 2.5vw, 36px);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.008);
+    transition: background-color 0.4s var(--ease);
+  }
+
+  .service-card:hover {
+    background: rgba(201, 255, 87, 0.03);
+  }
+
+  .service-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .service-card__number {
+    color: var(--acid);
+    font-size: 0.56rem;
+  }
+
+  .service-card__arrow {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--muted);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.4s var(--ease);
+    place-items: center;
+  }
+
+  .service-card:hover .service-card__arrow {
+    border-color: var(--acid);
+    background: var(--acid);
+    color: var(--ink);
+    transform: rotate(8deg);
+  }
+
+  .service-card__kicker {
+    margin-top: clamp(48px, 6vw, 84px);
+    color: var(--muted);
+    font-size: 0.52rem;
+  }
+
+  .service-card h3 {
+    max-width: 8ch;
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 3.1vw, 3.2rem);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.92;
+    transition: color 0.3s;
+  }
+
+  .service-card:hover h3 {
+    color: var(--acid);
+  }
+
+  .service-card p {
+    max-width: 34ch;
+    margin-top: 16px;
+    color: var(--muted-strong);
+    font-size: 0.79rem;
+    line-height: 1.65;
+  }
+
+  .service-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 28px;
+  }
+
+  .service-card__tags .tag {
+    font-size: 0.5rem;
+  }
+
+  .services-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 24px;
+  }
+
+  .services-foot .mono {
+    color: var(--muted);
+    font-size: 0.53rem;
+  }
+
+  @media (max-width: 900px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+    .service-card {
+      min-height: 0;
+    }
+    .service-card__kicker {
+      margin-top: 34px;
+    }
+    .service-card h3 {
+      max-width: none;
+    }
+    .service-card__tags {
+      padding-top: 22px;
+    }
+  }
+</style>

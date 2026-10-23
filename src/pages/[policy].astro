@@ -1,0 +1,288 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { legalPages, type LegalPage } from '../data/legal';
+import { url } from '../lib/paths';
+
+export function getStaticPaths() {
+  return legalPages.map((page) => ({
+    params: { policy: page.slug },
+    props: { page },
+  }));
+}
+
+interface Props {
+  page: LegalPage;
+}
+
+const { page } = Astro.props;
+const currentIndex = legalPages.findIndex((item) => item.slug === page.slug);
+---
+
+<BaseLayout title={`${page.title} ${page.accent} — Nanjar Budiman`} description={page.description} noindex={false}>
+  <header class="page-hero legal-hero">
+    <div class="container">
+      <div class="page-hero__top">
+        <span class="eyebrow">Legal / Information</span>
+        <span class="mono">Effective {page.updated}</span>
+      </div>
+
+      <h1 aria-label={`${page.title} ${page.accent}`}>{page.title}<br /><em>{page.accent}</em></h1>
+
+      <div class="page-hero__bottom">
+        <p class="page-hero__intro" data-reveal style="--delay: 80ms">{page.subtitle}</p>
+        <p class="page-hero__aside" data-reveal style="--delay: 140ms">
+          Document {String(currentIndex + 1).padStart(2, '0')} / {String(legalPages.length).padStart(2, '0')}<br />
+          NanjarBudiman.com
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <section class="legal-content">
+    <div class="container legal-layout">
+      <aside class="legal-nav">
+        <span class="mono">Policies</span>
+        <nav aria-label="Legal pages">
+          {legalPages.map((item) => (
+            <a
+              href={url(`/${item.slug}/`)}
+              class:list={{ 'is-active': item.slug === page.slug }}
+              aria-current={item.slug === page.slug ? 'page' : undefined}
+            >
+              {item.navLabel}
+            </a>
+          ))}
+        </nav>
+        <div class="legal-nav__foot">
+          <span class="mono">Questions?</span>
+          <a href={url('/contact/')}>Contact <Icon name="arrow-up-right" size={12} /></a>
+        </div>
+      </aside>
+
+      <div class="legal-main">
+        <p class="legal-effective mono">Effective date: {page.updated}</p>
+
+        {page.sections.map((section, index) => (
+          <section class="legal-section" id={`section-${index + 1}`} data-reveal={index < 3 ? true : undefined}>
+            <span class="legal-section__number mono">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <h2>{section.heading}</h2>
+              {section.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+              {section.bullets && (
+                <ul>
+                  {section.bullets.map((bullet) => <li>{bullet}</li>)}
+                </ul>
+              )}
+            </div>
+          </section>
+        ))}
+
+        <div class="legal-foot">
+          <p class="mono">This document is provided for transparency and general information. It is not legal advice.</p>
+          <a class="btn btn--outline btn--small" href={url('/contact/')}>
+            Ask a question
+            <Icon name="arrow-right" size={14} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal-hero {
+    background:
+      radial-gradient(ellipse at 82% 30%, rgba(201, 255, 87, 0.05), transparent 32%),
+      var(--ink);
+  }
+
+  .legal-hero h1 {
+    font-size: clamp(3.6rem, 8.5vw, 9.6rem);
+  }
+
+  .legal-hero h1 em {
+    color: var(--acid);
+  }
+
+  .legal-content {
+    padding-block: clamp(54px, 7vw, 96px) clamp(72px, 9vw, 130px);
+  }
+
+  .legal-layout {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 760px);
+    justify-content: center;
+    gap: clamp(40px, 7vw, 100px);
+    align-items: start;
+  }
+
+  .legal-nav {
+    position: sticky;
+    top: 108px;
+  }
+
+  .legal-nav > span {
+    display: block;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.52rem;
+  }
+
+  .legal-nav nav {
+    display: flex;
+    flex-direction: column;
+    margin-top: 7px;
+  }
+
+  .legal-nav nav a {
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--muted);
+    font-size: 0.7rem;
+    transition: color 0.2s, padding-left 0.2s;
+  }
+
+  .legal-nav nav a:hover {
+    color: var(--paper);
+  }
+
+  .legal-nav nav a.is-active {
+    padding-left: 5px;
+    color: var(--acid);
+  }
+
+  .legal-nav__foot {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 26px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  .legal-nav__foot > span {
+    color: var(--muted);
+    font-size: 0.48rem;
+  }
+
+  .legal-nav__foot a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--paper-dim);
+    font-size: 0.72rem;
+  }
+
+  .legal-nav__foot a:hover {
+    color: var(--acid);
+  }
+
+  .legal-effective {
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.52rem;
+  }
+
+  .legal-section {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 16px;
+    padding-block: 30px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .legal-section__number {
+    padding-top: 6px;
+    color: var(--acid);
+    font-size: 0.52rem;
+  }
+
+  .legal-section h2 {
+    color: var(--paper);
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
+    font-weight: 520;
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+  }
+
+  .legal-section p {
+    margin-top: 12px;
+    color: var(--muted-strong);
+    font-size: 0.88rem;
+    line-height: 1.75;
+  }
+
+  .legal-section ul {
+    margin-top: 14px;
+    padding-left: 1.1em;
+    color: var(--muted-strong);
+    font-size: 0.88rem;
+    line-height: 1.75;
+  }
+
+  .legal-section li {
+    margin-bottom: 6px;
+  }
+
+  .legal-section li::marker {
+    color: var(--acid);
+  }
+
+  .legal-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 34px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+
+  .legal-foot p {
+    max-width: 38ch;
+    color: var(--muted);
+    font-size: 0.5rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 900px) {
+    .legal-layout {
+      grid-template-columns: 1fr;
+    }
+    .legal-nav {
+      position: static;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px 30px;
+      align-items: start;
+    }
+    .legal-nav > span {
+      grid-column: 1 / -1;
+    }
+    .legal-nav nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 20px;
+    }
+    .legal-nav__foot {
+      margin-top: 0;
+      border-top: 0;
+      padding-top: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .legal-section {
+      grid-template-columns: 24px minmax(0, 1fr);
+      gap: 10px;
+    }
+    .legal-foot {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+interface Props {
+  index: string;
+  id?: string;
+}
+
+const { index, id } = Astro.props;
+---
+
+<div class="section-head" id={id}>
+  <span class="section-head__index">{index}</span>
+  <h2 data-reveal><slot name="title" /></h2>
+  <div class="section-head__note" data-reveal style="--delay: 100ms">
+    <slot name="note" />
+  </div>
+</div>

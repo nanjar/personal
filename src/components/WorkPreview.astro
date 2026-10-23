@@ -1,0 +1,137 @@
+---
+import SectionHead from './SectionHead.astro';
+import VideoCard from './VideoCard.astro';
+import Icon from './Icon.astro';
+import { featuredVideos } from '../data/site';
+import { url } from '../lib/paths';
+---
+
+<section class="section work-preview" id="work">
+  <div class="container">
+    <SectionHead index="02 / Work">
+      <Fragment slot="title">Moving images,<br /><em>made with machines.</em></Fragment>
+      <Fragment slot="note">
+        Music videos, short films, and visual experiments. Every frame started as a written idea — the
+        generative stack just made the impossible part possible.
+        <br /><br />
+        <a href={url('/work/')}>All 12 films <span aria-hidden="true">↗</span></a>
+      </Fragment>
+    </SectionHead>
+
+    <div class="work-meta mono" data-reveal>
+      <span>Selected / 2026</span>
+      <span>Direction · Edit · Color</span>
+      <span>Play with sound on</span>
+    </div>
+
+    <div class="work-grid">
+      {featuredVideos.map((video, index) => (
+        <VideoCard video={video} index={index + 1} class="work-item" />
+      ))}
+    </div>
+
+    <div class="work-foot" data-reveal>
+      <a class="btn btn--outline" href={url('/work/')}>
+        Enter the full reel
+        <Icon name="arrow-right" size={16} />
+      </a>
+      <p class="mono">12 films · 6 releases · one continuous experiment</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .work-preview {
+    border-top: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse at 80% 25%, rgba(134, 183, 255, 0.04), transparent 30%),
+      var(--ink);
+  }
+
+  .work-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 46px 0 22px;
+    padding-bottom: 13px;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--muted);
+    font-size: 0.53rem;
+  }
+
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(30px, 4vw, 54px) clamp(20px, 2.8vw, 36px);
+  }
+
+  .work-grid :global(.work-item:nth-child(1)) {
+    grid-column: span 7;
+  }
+  .work-grid :global(.work-item:nth-child(2)) {
+    grid-column: span 5;
+  }
+  .work-grid :global(.work-item:nth-child(3)) {
+    grid-column: span 5;
+  }
+  .work-grid :global(.work-item:nth-child(4)) {
+    grid-column: span 7;
+  }
+
+  .work-grid :global(.work-item:nth-child(2)),
+  .work-grid :global(.work-item:nth-child(3)) {
+    padding-top: clamp(0px, 3vw, 44px);
+  }
+
+  .work-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    margin-top: clamp(48px, 6vw, 76px);
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .work-foot p {
+    max-width: 32ch;
+    color: var(--muted);
+    font-size: 0.53rem;
+    line-height: 1.6;
+    text-align: right;
+  }
+
+  @media (max-width: 900px) {
+    .work-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .work-grid :global(.work-item:nth-child(n)) {
+      grid-column: auto;
+      padding-top: 0;
+    }
+    .work-grid :global(.work-item:nth-child(odd)) {
+      padding-top: 32px;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .work-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .work-grid :global(.work-item:nth-child(n)) {
+      padding-top: 0;
+    }
+    .work-meta span:nth-child(2) {
+      display: none;
+    }
+    .work-foot {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .work-foot p {
+      text-align: left;
+    }
+  }
+</style>

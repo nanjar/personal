@@ -1,0 +1,357 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import JournalCard from '../../components/JournalCard.astro';
+import Icon from '../../components/Icon.astro';
+import { articles } from '../../lib/articles';
+import { url } from '../../lib/paths';
+
+const groups = [
+  { label: 'All notes', value: 'all' },
+  { label: 'AI', value: 'ai' },
+  { label: 'Music', value: 'music' },
+  { label: 'Video', value: 'video' },
+  { label: 'Automation', value: 'automation' },
+  { label: 'Server', value: 'server' },
+];
+
+const groupFor = (category: string) => {
+  if (['AI Fundamentals', 'AI Local LLM', 'AI Assistant'].includes(category)) return 'ai';
+  if (category === 'AI Music') return 'music';
+  if (category === 'AI Filmmaking') return 'video';
+  if (['Automation', 'AI Automation'].includes(category)) return 'automation';
+  if (category === 'Server Monitoring') return 'server';
+  return 'ai';
+};
+
+const counts = Object.fromEntries(
+  groups.map((group) => [
+    group.value,
+    group.value === 'all' ? articles.length : articles.filter((article) => groupFor(article.category) === group.value).length,
+  ]),
+);
+---
+
+<BaseLayout
+  title="Journal — Nanjar Budiman"
+  description="Field notes on AI music, cinematic video, local models, n8n automation, and the practical work of making things with generative tools."
+>
+  <header class="page-hero journal-hero">
+    <div class="container">
+      <div class="page-hero__top">
+        <span class="eyebrow">Journal / Field notes</span>
+        <span class="mono">08 notes · 2026</span>
+      </div>
+
+      <h1 aria-label="Field notes from the machine.">Field notes<br />from the <em>machine.</em></h1>
+
+      <div class="page-hero__bottom">
+        <p class="page-hero__intro" data-reveal style="--delay: 80ms">
+          What I learn while making things with AI: the useful bits, the failure modes, and the decisions
+          that do not fit in a prompt. Written in Indonesian.
+        </p>
+        <p class="page-hero__aside" data-reveal style="--delay: 140ms">
+          AI music<br />
+          Cinematic video<br />
+          Local models<br />
+          Automation
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <section class="journal-index">
+    <div class="container journal-layout">
+      <aside class="journal-side">
+        <div class="journal-search">
+          <Icon name="search" size={16} />
+          <input type="search" placeholder="Search the notes…" aria-label="Search journal" data-journal-search />
+        </div>
+
+        <div class="journal-filters" role="group" aria-label="Filter journal by topic">
+          {groups.map((group) => (
+            <button
+              type="button"
+              class:list={['journal-filter', { 'is-active': group.value === 'all' }]}
+              data-journal-filter={group.value}
+              aria-pressed={group.value === 'all' ? 'true' : 'false'}
+            >
+              <span>{group.label}</span>
+              <span>{String(counts[group.value]).padStart(2, '0')}</span>
+            </button>
+          ))}
+        </div>
+
+        <div class="journal-side__note">
+          <span class="mono">Editorial note</span>
+          <p>
+            No growth hacks, no breathless tool lists. Just the process, including the parts that still
+            need work.
+          </p>
+          <span class="journal-side__count mono" data-journal-count>{articles.length} notes showing</span>
+        </div>
+      </aside>
+
+      <div>
+        <div class="journal-grid" data-journal-grid>
+          {articles.map((article, index) => (
+            <JournalCard article={article} index={index + 1} />
+          ))}
+        </div>
+
+        <div class="journal-empty" data-journal-empty hidden>
+          <span class="mono">No notes found</span>
+          <p>Try a different search, or <a href={url('/blog/')}>reset the filters</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .journal-hero {
+    background:
+      radial-gradient(ellipse at 82% 30%, rgba(201, 255, 87, 0.06), transparent 32%),
+      var(--ink);
+  }
+
+  .journal-hero h1 {
+    font-size: clamp(3.4rem, 9.4vw, 10.8rem);
+  }
+
+  .journal-index {
+    padding-block: clamp(46px, 6vw, 82px) clamp(72px, 9vw, 130px);
+  }
+
+  .journal-layout {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: clamp(38px, 6vw, 80px);
+    align-items: start;
+  }
+
+  .journal-side {
+    position: sticky;
+    top: 108px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .journal-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--ink-raised);
+    color: var(--muted);
+    transition: border-color 0.25s;
+  }
+
+  .journal-search:focus-within {
+    border-color: var(--acid);
+  }
+
+  .journal-search input {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--paper);
+    font-size: 0.78rem;
+    outline: 0;
+  }
+
+  .journal-search input::placeholder {
+    color: var(--muted);
+  }
+
+  .journal-search input::-webkit-search-cancel-button {
+    filter: invert(1);
+    opacity: 0.5;
+  }
+
+  .journal-filters {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+
+  .journal-filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 11px 2px;
+    border: 0;
+    border-bottom: 1px solid var(--line-soft);
+    background: transparent;
+    color: var(--muted);
+    font-size: 0.76rem;
+    text-align: left;
+    transition: color 0.2s, padding-left 0.25s;
+  }
+
+  .journal-filter > span:last-child {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+  }
+
+  .journal-filter:hover {
+    color: var(--paper);
+  }
+
+  .journal-filter.is-active {
+    padding-left: 8px;
+    color: var(--acid);
+  }
+
+  .journal-side__note {
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+
+  .journal-side__note > span {
+    color: var(--muted);
+    font-size: 0.51rem;
+  }
+
+  .journal-side__note p {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 0.74rem;
+    line-height: 1.6;
+  }
+
+  .journal-side__count {
+    display: block;
+    margin-top: 14px;
+    color: var(--acid);
+    font-size: 0.5rem;
+  }
+
+  .journal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(36px, 4.5vw, 64px) clamp(20px, 2.5vw, 34px);
+  }
+
+  .journal-grid :global(.journal-card[hidden]) {
+    display: none;
+  }
+
+  .journal-empty {
+    padding-block: 80px;
+    border-top: 1px solid var(--line);
+  }
+
+  .journal-empty > span {
+    color: var(--acid);
+    font-size: 0.55rem;
+  }
+
+  .journal-empty p {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .journal-empty a {
+    border-bottom: 1px solid var(--line);
+    color: var(--paper);
+  }
+
+  @media (max-width: 980px) {
+    .journal-layout {
+      grid-template-columns: 1fr;
+    }
+    .journal-side {
+      position: static;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 32px;
+    }
+    .journal-filters {
+      grid-row: span 2;
+    }
+    .journal-side__note {
+      grid-column: 1;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .journal-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .journal-side {
+      display: flex;
+    }
+    .journal-filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 16px;
+    }
+    .journal-filter {
+      border-top: 1px solid var(--line-soft);
+    }
+    .journal-side__note {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-journal-grid] .journal-card')];
+  const filters = document.querySelectorAll<HTMLButtonElement>('[data-journal-filter]');
+  const search = document.querySelector<HTMLInputElement>('[data-journal-search]');
+  const count = document.querySelector<HTMLElement>('[data-journal-count]');
+  const empty = document.querySelector<HTMLElement>('[data-journal-empty]');
+  const total = cards.length;
+
+  const groupFor = (category: string) => {
+    if (['AI Fundamentals', 'AI Local LLM', 'AI Assistant'].includes(category)) return 'ai';
+    if (category === 'AI Music') return 'music';
+    if (category === 'AI Filmmaking') return 'video';
+    if (['Automation', 'AI Automation'].includes(category)) return 'automation';
+    if (category === 'Server Monitoring') return 'server';
+    return 'ai';
+  };
+
+  let activeGroup = 'all';
+
+  const apply = () => {
+    const query = (search?.value || '').trim().toLowerCase();
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const category = card.dataset.category || '';
+      const matchesGroup = activeGroup === 'all' || groupFor(category) === activeGroup;
+      const matchesQuery = !query || (card.dataset.search || '').includes(query);
+      const show = matchesGroup && matchesQuery;
+      card.hidden = !show;
+      if (show) visible += 1;
+    });
+
+    if (count) count.textContent = `${visible} of ${total} notes showing`;
+    if (empty) empty.hidden = visible !== 0;
+  };
+
+  filters.forEach((button) => {
+    button.addEventListener('click', () => {
+      activeGroup = button.dataset.journalFilter || 'all';
+      filters.forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('is-active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+      apply();
+    });
+  });
+
+  search?.addEventListener('input', apply);
+</script>

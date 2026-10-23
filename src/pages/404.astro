@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { url } from '../lib/paths';
+---
+
+<BaseLayout
+  title="404 — Lost in latent space | Nanjar Budiman"
+  description="This page does not exist. Return to the work, music, or journal."
+  noindex
+>
+  <section class="not-found">
+    <div class="not-found__orb" aria-hidden="true">
+      <span></span>
+    </div>
+    <div class="container not-found__inner">
+      <span class="eyebrow">Error 404 / Page not found</span>
+      <p class="not-found__code" aria-hidden="true">404</p>
+      <h1 aria-label="Lost in latent space.">Lost in<br /><em>latent space.</em></h1>
+      <p class="not-found__copy" data-reveal style="--delay: 80ms">
+        The page you are looking for does not exist, moved, or was never generated in the first place.
+      </p>
+      <div class="not-found__actions" data-reveal style="--delay: 140ms">
+        <a class="btn btn--acid" href={url('/')}>
+          Back to home
+          <Icon name="arrow-up-right" size={15} />
+        </a>
+        <a class="link-arrow" href={url('/work/')}>See the work <Icon name="arrow-right" size={13} /></a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 100svh;
+    padding: 130px 0 90px;
+    overflow: hidden;
+  }
+
+  .not-found::before {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 75% 50%, rgba(201, 255, 87, 0.09), transparent 28%),
+      radial-gradient(ellipse at 25% 80%, rgba(255, 107, 61, 0.05), transparent 30%);
+    content: '';
+  }
+
+  .not-found__inner {
+    position: relative;
+    z-index: 2;
+  }
+
+  .not-found__code {
+    margin-top: clamp(30px, 6vw, 60px);
+    color: rgba(242, 239, 232, 0.08);
+    font-family: var(--font-display);
+    font-size: clamp(8rem, 27vw, 32rem);
+    font-weight: 600;
+    letter-spacing: -0.1em;
+    line-height: 0.62;
+  }
+
+  .not-found h1 {
+    margin-top: -0.34em;
+    font-family: var(--font-display);
+    font-size: clamp(3.8rem, 10vw, 11rem);
+    font-weight: 500;
+    letter-spacing: -0.075em;
+    line-height: 0.84;
+  }
+
+  .not-found h1 em {
+    color: var(--acid);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .not-found__copy {
+    max-width: 38ch;
+    margin-top: 28px;
+    color: var(--muted-strong);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .not-found__actions {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    margin-top: 30px;
+  }
+
+  .not-found__orb {
+    position: absolute;
+    top: 26%;
+    right: 8%;
+    width: 34vw;
+    aspect-ratio: 1;
+    border: 1px solid rgba(201, 255, 87, 0.14);
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+
+  .not-found__orb::before,
+  .not-found__orb::after {
+    position: absolute;
+    border: 1px solid rgba(242, 239, 232, 0.08);
+    border-radius: 50%;
+    content: '';
+  }
+
+  .not-found__orb::before {
+    inset: 12%;
+    border-style: dashed;
+  }
+
+  .not-found__orb::after {
+    inset: 32%;
+  }
+
+  .not-found__orb span {
+    position: absolute;
+    inset: 43%;
+    border-radius: 50%;
+    background: var(--acid);
+    box-shadow: 0 0 60px rgba(201, 255, 87, 0.4);
+  }
+
+  @media (max-width: 760px) {
+    .not-found__orb {
+      top: 18%;
+      right: -14%;
+      width: 65vw;
+    }
+    .not-found__actions {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 18px;
+    }
+  }
+</style>

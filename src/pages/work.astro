@@ -1,0 +1,384 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import VideoCard from '../components/VideoCard.astro';
+import Icon from '../components/Icon.astro';
+import { videos } from '../data/site';
+import { asset, url } from '../lib/paths';
+
+const categories = ['All', 'Music Video', 'AI Film', 'Cinematic'];
+const counts = Object.fromEntries(
+  categories.map((category) => [
+    category,
+    category === 'All' ? videos.length : videos.filter((video) => video.category === category).length,
+  ]),
+);
+---
+
+<BaseLayout
+  title="Work — Nanjar Budiman"
+  description="Music videos, AI films, and cinematic experiments by Nanjar Budiman. Direction, generative visuals, edit, and color."
+>
+  <header class="page-hero work-hero">
+    <div class="container">
+      <div class="page-hero__top">
+        <span class="eyebrow">Selected work / 2026</span>
+        <span class="mono">12 films · 6 releases</span>
+      </div>
+
+      <h1>The <em>reel.</em></h1>
+
+      <div class="page-hero__bottom">
+        <p class="page-hero__intro" data-reveal style="--delay: 80ms">
+          Music videos, short films, and visual experiments made with generative tools and a human
+          editorial hand. Sound on, lights down.
+        </p>
+        <p class="page-hero__aside" data-reveal style="--delay: 140ms">
+          Direction<br />
+          Generative visuals<br />
+          Edit &amp; color<br />
+          Bandung, ID
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <div class="container filter-bar__inner">
+      <div class="filter-list" role="group" aria-label="Filter work by category">
+        {categories.map((category) => (
+          <button
+            class:list={['filter-button', { 'is-active': category === 'All' }]}
+            type="button"
+            data-work-filter={category}
+            aria-pressed={category === 'All' ? 'true' : 'false'}
+          >
+            {category}
+            <span>{String(counts[category]).padStart(2, '0')}</span>
+          </button>
+        ))}
+      </div>
+      <span class="filter-count mono" data-work-count>{videos.length} films</span>
+    </div>
+  </div>
+
+  <section class="work-index">
+    <div class="container">
+      <div class="work-index__grid" data-work-grid>
+        {videos.map((video, index) => (
+          <VideoCard video={video} index={index + 1} class="work-index__item" />
+        ))}
+      </div>
+      <p class="work-empty" data-work-empty hidden>No films in this category yet.</p>
+    </div>
+  </section>
+
+  <section class="showreel">
+    <div class="container">
+      <div class="showreel__head">
+        <span class="eyebrow">Studio reel / 2026</span>
+        <span class="mono">00:00 — loop</span>
+      </div>
+      <div class="showreel__frame" data-reveal>
+        <video
+          src={asset('assets/videos/hero.mp4')}
+          poster={asset('assets/images/work/wQUN3uDIeQk-720.webp')}
+          controls
+          playsinline
+          preload="none"
+          aria-label="Studio showreel"
+        ></video>
+        <div class="showreel__caption">
+          <p>Fragments from the studio.</p>
+          <span class="mono">Press play · sound on</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="work-cta">
+    <div class="container">
+      <div>
+        <span class="eyebrow">Next</span>
+        <h2>Have a frame<br />in mind?</h2>
+      </div>
+      <a class="btn btn--acid" href={url('/contact/')}>
+        Let's make it move
+        <Icon name="arrow-up-right" size={16} />
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .work-hero {
+    background:
+      radial-gradient(ellipse at 80% 30%, rgba(134, 183, 255, 0.06), transparent 32%),
+      var(--ink);
+  }
+
+  .work-hero h1 {
+    font-size: clamp(5rem, 14vw, 15rem);
+  }
+
+  .filter-bar {
+    position: sticky;
+    top: 82px;
+    z-index: 40;
+    border-bottom: 1px solid var(--line);
+    background: rgba(8, 10, 11, 0.86);
+    backdrop-filter: blur(16px);
+  }
+
+  .filter-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-block: 12px;
+  }
+
+  .filter-list {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+  }
+
+  .filter-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted-strong);
+    font-size: 0.7rem;
+    font-weight: 560;
+    line-height: 1;
+    transition: background-color 0.25s, color 0.25s;
+  }
+
+  .filter-button span {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.48rem;
+    transition: color 0.25s;
+  }
+
+  .filter-button:hover {
+    color: var(--paper);
+  }
+
+  .filter-button.is-active {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .filter-button.is-active span {
+    color: rgba(8, 10, 11, 0.55);
+  }
+
+  .filter-count {
+    color: var(--muted);
+    font-size: 0.52rem;
+  }
+
+  .work-index {
+    padding-block: clamp(46px, 6vw, 80px) clamp(70px, 9vw, 130px);
+  }
+
+  .work-index__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(34px, 4.2vw, 64px) clamp(18px, 2.4vw, 34px);
+  }
+
+  .work-index__grid :global(.work-index__item[hidden]) {
+    display: none;
+  }
+
+  .work-empty {
+    padding-block: 80px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .showreel {
+    padding-block: clamp(60px, 8vw, 110px);
+    border-top: 1px solid var(--line);
+    background: #050606;
+  }
+
+  .showreel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .showreel__head .mono {
+    color: var(--muted);
+    font-size: 0.52rem;
+  }
+
+  .showreel__frame {
+    position: relative;
+    aspect-ratio: 16 / 8.2;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    background: #000;
+  }
+
+  .showreel__frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.82) contrast(1.03);
+  }
+
+  .showreel__frame::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(4, 6, 6, 0.74), transparent 55%);
+    content: '';
+    pointer-events: none;
+  }
+
+  .showreel__caption {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    left: 18px;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    pointer-events: none;
+  }
+
+  .showreel__caption p {
+    max-width: 15ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.4vw, 2.2rem);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.7);
+  }
+
+  .showreel__caption .mono {
+    padding: 6px 9px;
+    border: 1px solid rgba(242, 239, 232, 0.18);
+    border-radius: 999px;
+    background: rgba(8, 10, 11, 0.5);
+    color: var(--muted-strong);
+    font-size: 0.48rem;
+    text-align: right;
+    backdrop-filter: blur(7px);
+  }
+
+  .work-cta {
+    padding-block: clamp(64px, 8vw, 110px);
+    border-top: 1px solid var(--line);
+  }
+
+  .work-cta .container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .work-cta h2 {
+    margin-top: 18px;
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6.5vw, 7rem);
+    font-weight: 500;
+    letter-spacing: -0.065em;
+    line-height: 0.88;
+  }
+
+  @media (max-width: 1000px) {
+    .work-index__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 840px) {
+    .filter-bar {
+      top: 70px;
+    }
+    .filter-bar__inner {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .filter-list {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .filter-count {
+      display: none;
+    }
+    .showreel__frame {
+      aspect-ratio: 16 / 10;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .work-index__grid {
+      grid-template-columns: 1fr;
+    }
+    .filter-button {
+      padding: 8px 10px;
+      white-space: nowrap;
+    }
+    .showreel__caption {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .showreel__caption .mono {
+      text-align: left;
+    }
+    .work-cta .container {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 24px;
+    }
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-work-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-work-grid] .video-card');
+  const count = document.querySelector<HTMLElement>('[data-work-count]');
+  const empty = document.querySelector<HTMLElement>('[data-work-empty]');
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const category = button.dataset.workFilter || 'All';
+      let visible = 0;
+
+      buttons.forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('is-active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+
+      cards.forEach((card) => {
+        const match = category === 'All' || card.dataset.category === category;
+        card.hidden = !match;
+        if (match) visible += 1;
+      });
+
+      if (count) count.textContent = `${visible} ${visible === 1 ? 'film' : 'films'}`;
+      if (empty) empty.hidden = visible !== 0;
+    });
+  });
+</script>

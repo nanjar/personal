@@ -1,0 +1,275 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import {
+  articles,
+  coverSrc,
+  formatDate,
+  nextArticle,
+  type Article,
+} from '../../lib/articles';
+import { asset, url } from '../../lib/paths';
+import { imagePlaceholder } from '../../lib/images';
+import '../../styles/article.css';
+
+export function getStaticPaths() {
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const index = articles.findIndex((item) => item.slug === article.slug);
+const next = nextArticle(article.slug);
+const site = Astro.site ?? new URL('https://nanjarbudiman.com');
+const siteRoot = new URL(url('/'), site).toString();
+const canonical = new URL(Astro.url.pathname, site).toString();
+const coverUrl = new URL(url(coverSrc(article, 1440)), site).toString();
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.title,
+  description: article.metaDescription,
+  image: [coverUrl],
+  datePublished: article.date,
+  dateModified: article.date,
+  inLanguage: 'id-ID',
+  wordCount: article.wordCount,
+  author: {
+    '@type': 'Person',
+    name: 'Nanjar Budiman',
+    url: siteRoot,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Nanjar Budiman',
+    url: siteRoot,
+  },
+  mainEntityOfPage: canonical,
+};
+---
+
+<BaseLayout
+  title={`${article.title} — Nanjar Budiman`}
+  description={article.metaDescription}
+  image={coverSrc(article, 1440)}
+  type="article"
+  lang="id"
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(schema)}></script>
+
+  <div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div>
+
+  <article class="article">
+    <header class="article-head">
+      <div class="container">
+        <div class="article-head__top">
+          <a class="article-back" href={url('/blog/')}>
+            <Icon name="arrow-right" size={13} />
+            Journal
+          </a>
+          <span class="mono">Note {String(index + 1).padStart(2, '0')} / {String(articles.length).padStart(2, '0')}</span>
+        </div>
+
+        <div class="article-head__meta" data-reveal>
+          <span class="article-category">{article.category}</span>
+          <span class="mono">{formatDate(article.date)}</span>
+          <span class="mono">{article.readingTime} min read</span>
+          <span class="mono">Bahasa Indonesia</span>
+        </div>
+
+        <h1>{article.title}</h1>
+        <p class="article-deck" data-reveal style="--delay: 120ms">{article.description}</p>
+
+        <div class="article-byline" data-reveal style="--delay: 160ms">
+          <img
+            src={asset('assets/images/nanjar-480.webp')}
+            alt=""
+            width="36"
+            height="36"
+            loading="eager"
+          />
+          <span>Written by <strong>Nanjar Budiman</strong></span>
+          <span class="article-byline__dot" aria-hidden="true"></span>
+          <span class="mono">Bandung, ID</span>
+        </div>
+      </div>
+    </header>
+
+    <figure class="article-cover" data-reveal>
+      <div class="container">
+        <div class="article-cover__frame">
+          <img
+            src={imagePlaceholder}
+            data-src={asset(coverSrc(article, 1440))}
+            data-srcset={`${asset(coverSrc(article, 720))} 720w, ${asset(coverSrc(article, 1440))} 1440w`}
+            sizes="100vw"
+            alt={`Cover for ${article.title}`}
+            width="1440"
+            height="810"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="article-cover__tag mono">Cover / {article.category}</span>
+        </div>
+      </div>
+    </figure>
+
+    <div class="article-body container">
+      <aside class="article-toc" aria-label="Table of contents">
+        <span class="article-toc__label mono">On this page</span>
+        <nav>
+          {article.toc.map((item, tocIndex) => (
+            <a href={`#${item.id}`} data-toc-link={item.id}>
+              <span>{String(tocIndex + 1).padStart(2, '0')}</span>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        <div class="article-toc__foot">
+          <span class="mono">{article.wordCount} words</span>
+          <span class="mono">{article.readingTime} min</span>
+        </div>
+      </aside>
+
+      <div class="article-main">
+        <details class="article-toc-mobile">
+          <summary><span class="mono">On this page</span><span>{article.toc.length} sections</span></summary>
+          <nav>
+            {article.toc.map((item, tocIndex) => (
+              <a href={`#${item.id}`}>
+                <span>{String(tocIndex + 1).padStart(2, '0')}</span>
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </details>
+
+        <div class="article-prose" set:html={article.html} />
+
+        <div class="article-share">
+          <span class="mono">Share this note</span>
+          <button type="button" data-copy-link data-url={canonical}>
+            <Icon name="arrow-up-right" size={13} />
+            Copy link
+          </button>
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(canonical)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            X
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn
+          </a>
+        </div>
+
+        <div class="article-author">
+          <img
+            src={asset('assets/images/nanjar-480.webp')}
+            alt="Nanjar Budiman"
+            width="480"
+            height="480"
+            loading="lazy"
+          />
+          <div>
+            <span class="mono">Written by</span>
+            <h2>Nanjar Budiman</h2>
+            <p>
+              AI content creator, musician, and cinematic storyteller in Bandung. I write about the
+              practical work of making things with generative tools.
+            </p>
+            <a class="link-arrow" href={url('/about/')}>About the practice <Icon name="arrow-up-right" size={13} /></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="article-next">
+      <div class="container">
+        <span class="eyebrow">Next note</span>
+        <a href={url(`/blog/${next.slug}/`)}>
+          <div class="article-next__copy">
+            <span class="mono">{next.category} · {next.readingTime} min</span>
+            <h2>{next.title}</h2>
+          </div>
+          <span class="article-next__image">
+            <img
+              src={imagePlaceholder}
+              data-src={asset(coverSrc(next, 720))}
+              alt=""
+              width="720"
+              height="405"
+              loading="lazy"
+            />
+          </span>
+          <span class="article-next__arrow"><Icon name="arrow-up-right" size={20} /></span>
+        </a>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-reading-progress]');
+  const article = document.querySelector<HTMLElement>('.article-main');
+
+  const updateProgress = () => {
+    if (!bar || !article) return;
+    const start = article.offsetTop - 120;
+    const end = article.offsetTop + article.offsetHeight - window.innerHeight;
+    const progress = Math.min(1, Math.max(0, (window.scrollY - start) / Math.max(end - start, 1)));
+    bar.style.width = `${progress * 100}%`;
+  };
+
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+
+  // Active section in the table of contents.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+  const headings = links
+    .map((link) => document.getElementById(link.dataset.tocLink || ''))
+    .filter((heading): heading is HTMLElement => Boolean(heading));
+
+  if ('IntersectionObserver' in window && headings.length) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          links.forEach((link) => link.classList.toggle('is-active', link.dataset.tocLink === id));
+        });
+      },
+      { rootMargin: '-20% 0px -70% 0px', threshold: 0 },
+    );
+    headings.forEach((heading) => observer.observe(heading));
+  }
+
+  // Copy link.
+  const copy = document.querySelector<HTMLButtonElement>('[data-copy-link]');
+  copy?.addEventListener('click', async () => {
+    const value = copy.dataset.url || window.location.href;
+    try {
+      await navigator.clipboard.writeText(value);
+      const original = copy.innerHTML;
+      copy.textContent = 'Copied';
+      window.setTimeout(() => {
+        copy.innerHTML = original;
+      }, 1800);
+    } catch {
+      window.prompt('Copy this link:', value);
+    }
+  });
+</script>

@@ -1,0 +1,43 @@
+---
+interface Props {
+  name: string;
+  size?: number;
+  strokeWidth?: number;
+  class?: string;
+}
+
+const { name, size = 20, strokeWidth = 1.6, class: className = '' } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  aria-hidden="true"
+  focusable="false"
+>
+  {name === 'arrow-up-right' && <><path d="M7 17 17 7" /><path d="M8 7h9v9" /></>}
+  {name === 'arrow-right' && <><path d="M4 12h16" /><path d="m14 6 6 6-6 6" /></>}
+  {name === 'arrow-down' && <><path d="M12 4v16" /><path d="m6 14 6 6 6-6" /></>}
+  {name === 'play' && <path d="M8.2 5.6a.8.8 0 0 1 1.2-.7l9.2 6.4a.8.8 0 0 1 0 1.4l-9.2 6.4a.8.8 0 0 1-1.2-.7V5.6Z" fill="currentColor" stroke="none" />}
+  {name === 'pause' && <><path d="M9 6v12" /><path d="M15 6v12" /></>}
+  {name === 'menu' && <><path d="M4 8h16" /><path d="M4 16h16" /></>}
+  {name === 'close' && <><path d="m6 6 12 12" /><path d="m18 6-12 12" /></>}
+  {name === 'search' && <><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></>}
+  {name === 'instagram' && <><rect x="3.5" y="3.5" width="17" height="17" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.4" cy="6.7" r=".8" fill="currentColor" stroke="none" /></>}
+  {name === 'youtube' && <><rect x="2.5" y="5.5" width="19" height="13" rx="4" /><path d="m10.5 9 4.5 3-4.5 3V9Z" fill="currentColor" stroke="none" /></>}
+  {name === 'tiktok' && <path d="M14.2 3.2c.3 2 1.6 3.4 3.6 3.6v2.6a7.3 7.3 0 0 1-3.6-1v5.7a5.4 5.4 0 1 1-5.4-5.4c.3 0 .6 0 .9.1v2.7a2.7 2.7 0 1 0 1.9 2.6V3.2h2.6Z" fill="currentColor" stroke="none" />}
+  {name === 'facebook' && <path d="M14.3 21v-7h2.4l.4-3h-2.8V9.1c0-.9.3-1.5 1.6-1.5H17V5c-.3 0-1.2-.1-2.3-.1-2.3 0-3.8 1.4-3.8 3.9V11H8.4v3h2.5v7h3.4Z" fill="currentColor" stroke="none" />}
+  {name === 'spotify' && <><circle cx="12" cy="12" r="9" /><path d="M7.5 9.4c3.2-.9 6.4-.5 9.1 1" /><path d="M8.2 12.5c2.6-.7 5.2-.3 7.5.8" /><path d="M9 15.5c2-.5 4-.2 5.8.6" /></>}
+  {name === 'clock' && <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></>}
+  {name === 'mail' && <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3.5 7 8.5 6 8.5-6" /></>}
+  {name === 'spark' && <><path d="M12 3.5 13.7 9l5.5 1.7-5.5 1.7L12 18l-1.7-5.6L4.8 10.7 10.3 9 12 3.5Z" /><path d="M19 16.5 19.7 19l2.3.8-2.3.7L19 23l-.7-2.5-2.3-.7 2.3-.8.7-2.5Z" /></>}
+  {name === 'check' && <path d="m5 12.5 4.2 4L19 6.5" />}
+  {name === 'chevron-down' && <path d="m6 9 6 6 6-6" />}
+</svg>

@@ -1,0 +1,201 @@
+---
+import Icon from './Icon.astro';
+import type { Article } from '../lib/articles';
+import { formatDate } from '../lib/articles';
+import { asset, url } from '../lib/paths';
+import { imagePlaceholder } from '../lib/images';
+
+interface Props {
+  article: Article;
+  index: number;
+}
+
+const { article, index } = Astro.props;
+const number = String(index).padStart(2, '0');
+---
+
+<a class="journal-row" href={url(`/blog/${article.slug}/`)} data-reveal style={`--delay:${index * 55}ms`}>
+  <span class="journal-row__number">{number}</span>
+
+  <span class="journal-row__image">
+    <img
+      src={imagePlaceholder}
+      data-src={asset(`assets/images/journal/${article.cover.replace('.webp', '-720.webp')}`)}
+      data-srcset={`${asset(`assets/images/journal/${article.cover.replace('.webp', '-720.webp')}`)} 720w, ${asset(`assets/images/journal/${article.cover.replace('.webp', '-1440.webp')}`)} 1440w`}
+      sizes="(max-width: 700px) 96px, 180px"
+      alt=""
+      width="720"
+      height="405"
+      loading="lazy"
+      decoding="async"
+    />
+  </span>
+
+  <span class="journal-row__content">
+    <span class="journal-row__meta">
+      <span class="journal-row__category">{article.category}</span>
+      <span>{formatDate(article.date)}</span>
+      <span>{article.readingTime} min read</span>
+    </span>
+    <span class="journal-row__title">{article.title}</span>
+    <span class="journal-row__excerpt">{article.description}</span>
+  </span>
+
+  <span class="journal-row__arrow" aria-hidden="true">
+    <Icon name="arrow-up-right" size={18} />
+  </span>
+</a>
+
+<style>
+  .journal-row {
+    display: grid;
+    grid-template-columns: 42px 184px minmax(0, 1fr) 46px;
+    gap: clamp(16px, 2.4vw, 34px);
+    align-items: center;
+    padding-block: 20px;
+    border-top: 1px solid var(--line-soft);
+    transition: border-color 0.3s;
+  }
+
+  .journal-row:last-child {
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .journal-row__number {
+    align-self: start;
+    padding-top: 4px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+  }
+
+  .journal-row__image {
+    display: block;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .journal-row__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.75) brightness(0.86);
+    transition: transform 0.7s var(--ease), filter 0.4s var(--ease);
+  }
+
+  .journal-row__content {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .journal-row__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.54rem;
+    letter-spacing: 0.07em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .journal-row__category {
+    color: var(--acid);
+  }
+
+  .journal-row__meta > span + span::before {
+    margin-right: 10px;
+    color: var(--line);
+    content: '/';
+  }
+
+  .journal-row__title {
+    max-width: 40ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.12rem, 1.75vw, 1.6rem);
+    font-weight: 520;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    transition: color 0.25s;
+  }
+
+  .journal-row__excerpt {
+    max-width: 58ch;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.55;
+  }
+
+  .journal-row__arrow {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--muted-strong);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s, transform 0.3s;
+    place-items: center;
+  }
+
+  .journal-row:hover {
+    border-color: var(--line);
+  }
+
+  .journal-row:hover .journal-row__image img {
+    filter: saturate(1) brightness(1);
+    transform: scale(1.04);
+  }
+
+  .journal-row:hover .journal-row__title {
+    color: var(--acid);
+  }
+
+  .journal-row:hover .journal-row__arrow {
+    border-color: var(--acid);
+    background: var(--acid);
+    color: var(--ink);
+    transform: rotate(8deg);
+  }
+
+  @media (max-width: 900px) {
+    .journal-row {
+      grid-template-columns: 32px 140px minmax(0, 1fr) 40px;
+      gap: 14px;
+    }
+    .journal-row__excerpt {
+      display: none;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .journal-row {
+      grid-template-columns: 96px minmax(0, 1fr) 34px;
+      gap: 13px;
+      padding-block: 16px;
+    }
+    .journal-row__number {
+      display: none;
+    }
+    .journal-row__image {
+      aspect-ratio: 1;
+    }
+    .journal-row__title {
+      font-size: 1rem;
+      line-height: 1.16;
+    }
+    .journal-row__meta > span:nth-child(2),
+    .journal-row__meta > span:nth-child(3) {
+      display: none;
+    }
+    .journal-row__arrow {
+      width: 32px;
+      height: 32px;
+    }
+  }
+</style>

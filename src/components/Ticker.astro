@@ -1,0 +1,88 @@
+---
+interface Props {
+  items?: string[];
+  accent?: boolean;
+}
+const {
+  items = ['AI music', 'Cinematic video', 'Generative storytelling', 'Creative automation', 'Bandung → worldwide'],
+  accent = false,
+} = Astro.props;
+
+---
+
+<div class:list={['ticker', { 'ticker--accent': accent }]} aria-hidden="true">
+  <div class="ticker__track">
+    {[0, 1].map(() => (
+      <div class="ticker__set">
+        {items.map((item) => (
+          <span class="ticker__item">{item}<i>✳</i></span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ticker {
+    width: 100%;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .ticker--accent {
+    border-top: 1px solid var(--line);
+    background: var(--acid);
+    color: var(--ink);
+  }
+
+  .ticker__track {
+    display: flex;
+    width: max-content;
+    animation: ticker 34s linear infinite;
+  }
+
+  .ticker:hover .ticker__track {
+    animation-play-state: paused;
+  }
+
+  .ticker__set {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .ticker__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 26px;
+    padding: 14px 26px;
+    color: var(--muted-strong);
+    font-family: var(--font-mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.15em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .ticker--accent .ticker__item {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .ticker__item i {
+    color: var(--acid);
+    font-style: normal;
+    font-size: 0.9rem;
+  }
+
+  .ticker--accent .ticker__item i {
+    color: var(--ink);
+  }
+
+  @keyframes ticker {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

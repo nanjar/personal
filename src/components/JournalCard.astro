@@ -1,0 +1,170 @@
+---
+import Icon from './Icon.astro';
+import type { Article } from '../lib/articles';
+import { formatDate } from '../lib/articles';
+import { asset, url } from '../lib/paths';
+import { imagePlaceholder } from '../lib/images';
+
+interface Props {
+  article: Article;
+  index: number;
+}
+
+const { article, index } = Astro.props;
+const number = String(index).padStart(2, '0');
+---
+
+<a
+  class="journal-card"
+  href={url(`/blog/${article.slug}/`)}
+  data-category={article.category}
+  data-search={`${article.title} ${article.description} ${article.category}`.toLowerCase()}
+  data-reveal
+  style={`--delay:${(index % 3) * 60}ms`}
+>
+  <span class="journal-card__image">
+    <img
+      src={imagePlaceholder}
+      data-src={asset(`assets/images/journal/${article.cover.replace('.webp', '-720.webp')}`)}
+      data-srcset={`${asset(`assets/images/journal/${article.cover.replace('.webp', '-720.webp')}`)} 720w, ${asset(`assets/images/journal/${article.cover.replace('.webp', '-1440.webp')}`)} 1440w`}
+      sizes="(max-width: 760px) 100vw, (max-width: 1200px) 50vw, 640px"
+      alt=""
+      width="720"
+      height="405"
+      loading="lazy"
+      decoding="async"
+    />
+    <span class="journal-card__number mono">{number}</span>
+    <span class="journal-card__arrow" aria-hidden="true"><Icon name="arrow-up-right" size={16} /></span>
+  </span>
+
+  <span class="journal-card__body">
+    <span class="journal-card__meta mono">
+      <span class="journal-card__category">{article.category}</span>
+      <span>{formatDate(article.date)}</span>
+    </span>
+    <span class="journal-card__title">{article.title}</span>
+    <span class="journal-card__excerpt">{article.description}</span>
+    <span class="journal-card__read mono">{article.readingTime} min read</span>
+  </span>
+</a>
+
+<style>
+  .journal-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .journal-card__image {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .journal-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.78) contrast(1.03) brightness(0.9);
+    transition: transform 0.8s var(--ease), filter 0.45s var(--ease);
+  }
+
+  .journal-card__number {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: grid;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(242, 239, 232, 0.22);
+    border-radius: 50%;
+    background: rgba(8, 10, 11, 0.5);
+    color: var(--paper);
+    font-size: 0.55rem;
+    letter-spacing: 0.05em;
+    backdrop-filter: blur(8px);
+    place-items: center;
+  }
+
+  .journal-card__arrow {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    display: grid;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--paper);
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+    place-items: center;
+  }
+
+  .journal-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding-top: 15px;
+  }
+
+  .journal-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 0.54rem;
+  }
+
+  .journal-card__category {
+    color: var(--acid);
+  }
+
+  .journal-card__meta > span + span::before {
+    margin-right: 10px;
+    color: var(--line);
+    content: '/';
+  }
+
+  .journal-card__title {
+    max-width: 32ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.9vw, 1.65rem);
+    font-weight: 520;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+    transition: color 0.25s;
+  }
+
+  .journal-card__excerpt {
+    max-width: 50ch;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .journal-card__read {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 0.52rem;
+  }
+
+  .journal-card:hover .journal-card__image img {
+    filter: saturate(1) contrast(1.01) brightness(1);
+    transform: scale(1.03);
+  }
+
+  .journal-card:hover .journal-card__arrow {
+    opacity: 1;
+    transform: none;
+  }
+
+  .journal-card:hover .journal-card__title {
+    color: var(--acid);
+  }
+</style>
