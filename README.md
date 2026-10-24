@@ -141,7 +141,7 @@ The site also emits `sitemap.xml` and `robots.txt` from Astro endpoints, using t
 
 ## Notes
 
-- The contact route intentionally uses Instagram DM rather than a form that would need a backend.
+- The primary contact CTA opens an email draft to **me@nanjarbudiman.com**; Instagram DM remains a secondary channel. No backend form is required.
 - Videos open through `youtube-nocookie.com` only when a visitor clicks play; no YouTube iframes load on initial page load.
 - The Three.js scene pauses when the hero is off-screen or the tab is hidden, and renders a static frame under `prefers-reduced-motion`.
 - Original writing, music, videos, and artwork remain © Nanjar Budiman. The code is provided for this personal site; no open-source licence is granted for the content.

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import { socials } from '../data/site';
+import { site, socials } from '../data/site';
 
 const brief = [
   'What you want to make — song, film, visual, or system',
@@ -65,21 +65,17 @@ const faqs = [
     <div class="container contact-main__grid">
       <div class="contact-primary" data-reveal>
         <span class="eyebrow">Fastest route</span>
-        <h2>Send a DM<br /><em>on Instagram.</em></h2>
+        <h2>Send me<br /><em>an email.</em></h2>
         <p>
           Tell me what you are making, who it is for, and when it needs to exist. Links and references
           are welcome. I read everything myself.
         </p>
-        <a
-          class="btn btn--acid contact-primary__button"
-          href="https://ig.me/m/nanjarbudiman"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Icon name="instagram" size={17} />
-          Open Instagram DM
+        <a class="btn btn--acid contact-primary__button" href={site.emailHref}>
+          <Icon name="mail" size={17} />
+          Email me
           <Icon name="arrow-up-right" size={14} />
         </a>
+        <a class="contact-primary__email" href={site.emailHref}>{site.email}</a>
         <div class="contact-primary__status">
           <span class="dot-live"></span>
           <span class="mono">Open to collaborations / 2026</span>
@@ -91,6 +87,14 @@ const faqs = [
           <span class="mono">Elsewhere</span>
           <span class="mono">Follow the process</span>
         </div>
+        <a class="channel" href={site.emailHref} aria-label={`Email ${site.email}`}>
+          <span class="channel__icon"><Icon name="mail" size={18} /></span>
+          <span class="channel__body">
+            <strong>Email</strong>
+            <small>{site.email}</small>
+          </span>
+          <Icon name="arrow-up-right" size={15} />
+        </a>
         {socials.map((social) => (
           <a
             class="channel"
@@ -209,6 +213,20 @@ const faqs = [
   .contact-primary__button {
     margin-top: 30px;
     gap: 10px;
+  }
+
+  .contact-primary__email {
+    display: inline-block;
+    margin-top: 15px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted-strong);
+    font-size: 0.86rem;
+    transition: color 0.25s, border-color 0.25s;
+  }
+
+  .contact-primary__email:hover {
+    border-color: var(--acid);
+    color: var(--acid);
   }
 
   .contact-primary__status {

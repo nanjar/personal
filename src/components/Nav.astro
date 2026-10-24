@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { nav, socials } from '../data/site';
+import { nav, site, socials } from '../data/site';
 import { currentPath, url } from '../lib/paths';
 
 const path = currentPath(Astro.url.pathname);
@@ -28,7 +28,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
 
     <div class="nav-actions">
       <span class="availability"><span class="dot-live"></span> Open to collaborations</span>
-      <a class="btn btn--small btn--acid nav-cta" href={url('/contact/')}>
+      <a class="btn btn--small btn--acid nav-cta" href={site.emailHref}>
         Let's talk
         <Icon name="arrow-up-right" size={15} />
       </a>
@@ -59,6 +59,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
           </a>
         ))}
       </div>
+      <a class="mobile-menu__email" href={site.emailHref}>{site.email}</a>
       <span class="mono">Bandung, ID — {new Date().getFullYear()}</span>
     </div>
   </div>
@@ -316,12 +317,26 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
 
   .mobile-menu__foot {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px 16px;
     padding-top: 22px;
     border-top: 1px solid var(--line-soft);
     color: var(--muted);
+  }
+
+  .mobile-menu__email {
+    order: 2;
+    width: 100%;
+    color: var(--paper-dim);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.05em;
+  }
+
+  .mobile-menu__email:hover {
+    color: var(--acid);
   }
 
   .mobile-menu__socials {

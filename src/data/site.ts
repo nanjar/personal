@@ -6,6 +6,12 @@ export const site = {
   location: 'Bandung, Indonesia',
   coordinates: '6.9175° S, 107.6191° E',
   tagline: 'Where human creativity meets artificial intelligence.',
+  email: 'me@nanjarbudiman.com',
+  emailHref: `mailto:me@nanjarbudiman.com?subject=${encodeURIComponent(
+    'Project inquiry — Nanjar Budiman',
+  )}&body=${encodeURIComponent(
+    "Hi Nanjar,\n\nWhat I'm making:\nWho it's for:\nDeadline:\nReferences:\n\nThanks!",
+  )}`,
 };
 
 export const nav = [

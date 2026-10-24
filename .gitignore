@@ -5,6 +5,7 @@ dist/
 .npm-cache/
 .tmp/
 shots/
+video/
 .DS_Store
 *.log
 .env
